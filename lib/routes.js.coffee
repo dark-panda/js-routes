@@ -13,8 +13,6 @@ Utils =
 
   serialize: (object, prefix = null) ->
     return ""  unless object
-    if !prefix and !(@get_object_type(object) is "object")
-      throw new Error("Url parameters should be a javascript hash")
 
     if root.jQuery
       result = root.jQuery.param(object)

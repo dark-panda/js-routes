@@ -61,12 +61,18 @@ Available options:
   * Default: blank
 * `camel_case` (version >= 0.8.8) - Generate camel case route names.
   * Default: false
-* `url_links` (version >= 0.8.9) - Generate additional url links, where url_links value is beginning of url routes (ex: http[s]://example.com).
+* `url_links` (version >= 0.8.9) - Generate `*_url` links (in addition to default `*_path`), where url_links value is beginning of url routes
+  * Example: http[s]://example.com
   * Default: false
 
-You can generate routes files on the application side like this:
+### Very Advanced Setup
+
+In case you need multiple route files for different parts of your application, you can not use asset pipeline.
+
+You need to generate routes files on the application side like this:
 
 ``` ruby
+path = "app/assets/javascripts"
 JsRoutes.generate!("#{path}/app_routes.js", :namespace => "AppRoutes", :exclude => [/^admin_/, /^api_/])
 JsRoutes.generate!("#{path}/adm_routes.js", :namespace => "AdmRoutes", :include => /^admin_/)
 JsRoutes.generate!("#{path}/api_routes.js", :namespace => "ApiRoutes", :include => /^api_/, :default_url_options => {:format => "json"})
@@ -126,7 +132,7 @@ Spork.trap_method(JsRoutes, :generate!)
 There are some alternatives available. Most of them has only basic feature and don't reach the level of quality I accept.
 Advantages of this one are:
 
-* Rails3 support
+* Rails3 & Rails4 support
 * Rich options set
 * Support Rails `#to_param` convention for seo optimized paths
 * Well tested

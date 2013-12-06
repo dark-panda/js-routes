@@ -10,26 +10,26 @@ class JsRoutes
   DEFAULT_PATH = File.join('app','assets','javascripts','routes.js')
 
   DEFAULTS = {
-    :namespace => "Routes",
-    :exclude => [],
-    :include => //,
-    :file => DEFAULT_PATH,
-    :prefix => nil,
-    :url_links => nil,
-    :camel_case => false,
-    :default_url_options => {}
+    namespace: "Routes",
+    exclude: [],
+    include: //,
+    file: DEFAULT_PATH,
+    prefix: nil,
+    url_links: nil,
+    camel_case: false,
+    default_url_options: {}
   }
 
   # We encode node symbols as integer to reduce the routes.js file size
   NODE_TYPES = {
-    :GROUP => 1,
-    :CAT => 2,
-    :SYMBOL => 3,
-    :OR => 4,
-    :STAR => 5,
-    :LITERAL => 6,
-    :SLASH => 7,
-    :DOT => 8
+    GROUP: 1,
+    CAT: 2,
+    SYMBOL: 3,
+    OR: 4,
+    STAR: 5,
+    LITERAL: 6,
+    SLASH: 7,
+    DOT: 8
   }
 
   LAST_OPTIONS_KEY = "options".freeze
@@ -71,7 +71,7 @@ class JsRoutes
     # full environment will be available during asset compilation.
     # This is required to ensure routes are loaded.
     def assert_usable_configuration!
-      unless Rails.application.config.assets.initialize_on_precompile
+      if 3 == Rails::VERSION::MAJOR && !Rails.application.config.assets.initialize_on_precompile
         raise("Cannot precompile js-routes unless environment is initialized. Please set config.assets.initialize_on_precompile to true.")
       end
       true
@@ -101,8 +101,8 @@ class JsRoutes
 
   def deprecated_default_format
     if @options.key?(:default_format)
-      warn("default_format option is deprecated. Use default_url_options = {:format => <format>} instead")
-      {:format => @options[:default_format]}
+      warn("default_format option is deprecated. Use default_url_options = { format: <format> } instead")
+      { format: @options[:default_format] }
     else
       {}
     end
@@ -125,7 +125,7 @@ class JsRoutes
   def js_routes
     Rails.application.reload_routes!
     js_routes = Rails.application.routes.named_routes.routes.sort_by(&:to_s).map do |_, route|
-      if route.app.respond_to?(:superclass) && route.app.superclass == Rails::Engine
+      if route.app.respond_to?(:superclass) && route.app.superclass == Rails::Engine && !route.path.anchored
         route.app.routes.named_routes.map do |_, engine_route|
           build_route_if_match(engine_route, route)
         end

@@ -5,6 +5,7 @@ defaults =
   default_url_options: DEFAULT_URL_OPTIONS
 
 NodeTypes = NODE_TYPES
+__hasProp = {}.hasOwnProperty
 
 Utils =
 
@@ -70,7 +71,13 @@ Utils =
     return ""  unless object
     property = object
     if @get_object_type(object) is "object"
-      property = object.to_param or object.id or object
+      if "to_param" in object
+        property = object.to_param
+      else if "id" in object
+        property = object.id
+      else
+        property = object
+
       property = property.call(object) if @get_object_type(property) is "function"
     property.toString()
 
